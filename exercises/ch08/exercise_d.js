@@ -13,7 +13,13 @@
 // Remember either's two arguments must return the same type.
 
 // validateName :: User -> Either String ()
-const validateName = undefined;
+const validateName = (user) =>
+  user.name.length > 3 ? Either.of() : left("The user name must be longer than 3 characters");
 
 // register :: User -> IO String
-const register = compose(undefined, validateUser(validateName));
+const register = compose(either(IO.of, map(showWelcome)), map(save), validateUser(validateName));
+
+// Pipeline:
+// validateUser(validateName) :: User -> Either String User
+// map(save) :: Either String User -> Either String (IO User)
+// either(IO.of, map(showWelcome)) :: Either String (IO User) -> IO String
